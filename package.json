@@ -1,0 +1,72 @@
+{
+  "name": "viebeg",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@antv/g2plot": "^1.1.5",
+    "@material-ui/core": "^4.7.0",
+    "@material-ui/icons": "^3.0.2",
+    "@opd/g2plot-react": "^1.5.2",
+    "axios": "^0.18.0",
+    "bootstrap": "^4.5.0",
+    "chart.js": "^2.9.3",
+    "connected-react-router": "^6.3.2",
+    "fusioncharts": "^3.15.1-sr.1",
+    "history": "^4.7.2",
+    "holderjs": "^2.9.7",
+    "jspdf": "^1.5.3",
+    "jspdf-autotable": "^3.5.6",
+    "moment": "^2.24.0",
+    "node-sass": "^4.12.0",
+    "query-string": "6.8.2",
+    "react": "^16.12.0",
+    "react-addons-css-transition-group": "^15.6.2",
+    "react-bootstrap": "^1.0.1",
+    "react-captcha-generator": "^1.6.3",
+    "react-dom": "^16.7.0",
+    "react-fusioncharts": "^3.1.2",
+    "react-google-recaptcha": "^2.0.1",
+    "react-google-recaptcha-v3": "^1.4.1",
+    "react-icons": "^3.10.0",
+    "react-paginate": "^6.3.2",
+    "react-redux": "^6.0.0",
+    "react-responsive": "^7.0.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.3",
+    "react-select": "^3.0.8",
+    "react-spinners-kit": "^1.9.1",
+    "react-tooltip": "^4.2.6",
+    "redux": "^4.0.1",
+    "redux-axios-middleware": "^4.0.0",
+    "redux-form": "^8.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "description": "This README would normally document whatever steps are necessary to get your application up and running.",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VIEBEG/viematch_frontend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VIEBEG/viematch_frontend/issues"
+  },
+  "homepage": "https://github.com/VIEBEG/viematch_frontend#readme"
+}
