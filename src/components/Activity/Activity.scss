@@ -53,4 +53,22 @@
   }
 }
 
+#proformaTitle{
+  text-align: center; 
+  vertical-align: middle;
+  font-style: bold;
+  font-weight: bold;
+}
 
+#clientDesc{
+  font-style: bold;
+  font-weight: bold;
+}
+
+.table-bordered{
+  border:1px solid black;
+}
+
+.modelBody .table-bordered tr td {
+  border: 1px solid black;
+}
