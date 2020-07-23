@@ -72,3 +72,8 @@
 .modelBody .table-bordered tr td {
   border: 1px solid black;
 }
+
+thead tr th, .btn-sm {
+  font-style: bold;
+  font-weight: bold;
+}

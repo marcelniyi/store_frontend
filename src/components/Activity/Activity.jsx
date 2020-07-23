@@ -148,8 +148,8 @@ class Activity extends Component {
                             <tr>
                                 <th>DATE</th>
                                 <th>REQUEST</th>
-                                <th>PROFOMA PDF</th>
-                                <th>PROFOMA EMAIL</th>
+                                <th>PDF</th>
+                                <th>EMAIL</th>
                                 <th>ACTION</th>
                             </tr>
                         </thead>
@@ -176,7 +176,7 @@ class Activity extends Component {
                                         </td>
 
                                         <td>
-                                            <button onClick={() => { alert("We goin to approve") }}>Approve</button>
+                                            <button className="btn btn-success btn-sm" onClick={() => { alert("We goin to approve") }}>Approve</button>
                                         </td>
                                     </ tr >
                                 ))
@@ -211,7 +211,7 @@ class Activity extends Component {
                     centered
                     show={this.state.model}>
                         <Modal.Header>
-                        <button onClick={this.hideModal}>Close</button>
+                        <button type="button" className="close" onClick={this.hideModal} data-dismiss="modal">&times;</button>
                     </Modal.Header>
                     <ModalBody className="modelBody">
                         <table style={{ marginBottom: '25px' }}>
@@ -245,6 +245,9 @@ class Activity extends Component {
                             </td></tr>
                         </table>
                     </ModalBody>
+                    <Modal.Footer>
+                    <button onClick={this.hideModal}>Close</button>
+                    </Modal.Footer>
                 </Modal>
 
 
