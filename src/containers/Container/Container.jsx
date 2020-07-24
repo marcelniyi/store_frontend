@@ -10,6 +10,7 @@ import UserManagement from '../../components/UserManagement/UserManagement';
 import StockManagement from '../../components/StockManagement/StockManagement';
 import ShopCart from '../../components/ShoppingCart/Cart';
 import Activity from '../../components/Activity/Activity';
+import Settings from '../../components/StockSettings/StockSettings';
 
 
 class Container extends Component {
@@ -20,7 +21,7 @@ class Container extends Component {
         return (
             <Fragment>
                 <Head history={history} match={match} />
-                <div className="page">
+                <div className="page" style={{ backgroundColor: '#EBF4FE' }}>
                     <Panel location={history.location}/>
                     <Switch>
                         <Route
@@ -52,6 +53,15 @@ class Container extends Component {
                             exact
                             render={() => role === 'clinic' ? <UserManagement /> : <Redirect to="/main/stock-management"/>}
                         />
+
+                        <Route
+                            path={`${match.url}/stock-settings`}
+                            exact
+                            render={() => role === 'clinic' ? <Settings /> : <Redirect to="/main/stock-management"/>}
+                        />
+
+
+
                         <Route path={`${match.url}/stock-management`} component={StockManagement} />
                         <Route render={()=>(<p>Not found</p>)} />
                     </Switch>

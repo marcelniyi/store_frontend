@@ -23,7 +23,7 @@ class Head extends Component {
             <header className="header_wrapper">
                 <div>
                     
-                    <div className="email">{email}</div>
+                    <div className="email">{name}</div>
                 </div>
                 {/* <button className="logout" onClick={this.handleOut}>
                     <img src={logout} alt="logout"/>
@@ -35,13 +35,13 @@ class Head extends Component {
                 <Dropdown.Menu>
                     <Dropdown.Header>
                         <img src={on} style={{width: '200px', height: '200px'}} /><br />
-                        <span style={{ marginLeft: '40%', fontWeight: 'bold' }}>{localStorage.username} </span>
+                        <span style={{ marginLeft: '10px', fontWeight: 'bold' }}>{localStorage.email} </span>
                     </Dropdown.Header>
                     
                     <Dropdown.Divider />
                     <Dropdown.Item href="#/action-2">Profile</Dropdown.Item>
                     <Dropdown.Item href="#/action-3">Accounts</Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">Stock managment settings</Dropdown.Item>
+                    <Dropdown.Item href="/main/stock-settings">Stock managment settings</Dropdown.Item>
                     <Dropdown.Item href="#/action-3">Activity Log</Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item onClick={this.handleOut}>Sign Out</Dropdown.Item>
