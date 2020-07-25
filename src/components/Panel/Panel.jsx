@@ -7,7 +7,7 @@ import products from '../../assets/image/products.svg';
 import dashboard from '../../assets/image/dashboard.svg';
 import user_management from '../../assets/image/user_management.svg';
 import activity from '../../assets/image/activity.svg';
-import cart from '../../assets/image/shopping-cart.svg';
+import cart from '../../assets/image/cart.png';
 import './Panel.scss';
 
 class Panel extends Component {
