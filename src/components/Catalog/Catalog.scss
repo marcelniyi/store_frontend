@@ -284,6 +284,8 @@
   }
 }
 
+
+
 .block_search{
   position: relative;
   &:before{
@@ -349,23 +351,7 @@
       }
     }
   }
-  input{
-    padding: 0 16px 0 34px;
-    box-sizing: border-box;
-    border: 1px solid rgba(32, 69, 105, 0.1);
-    border-radius: 4px;
-    width: 352px;
-    height: 48px;
-    font-family: "MontRegular",sans-serif;
-    font-size: 14px;
-    &::placeholder{
-      color:  rgba(32, 69, 105, 0.5);
-    }
-    &:focus{
-      border: 1px solid rgba(32, 69, 105, 0.3);
-
-    }
-  }
+  
 }
 
 .add_dialog{
@@ -494,4 +480,17 @@ h3.empty_list {
 
 #tooltip-top > .tooltip-arrow {
   border-top: 5px solid #062e56;
+}
+
+
+.selectBtn {
+  -moz-appearance:none; /* Firefox */
+  -webkit-appearance:none; /* Safari and Chrome */
+  appearance:none;
+}
+
+.selectBtn, option { min-width: 10px; width: auto; }
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+  background-color: #3796F6;
 }

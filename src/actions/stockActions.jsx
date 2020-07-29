@@ -1,13 +1,13 @@
 import * as types from './constants.jsx';
 
 
-export function getStock(marker, page, quantity) {
+export function getStock(marker) {
     return {
         type: types.GET_STOCK,
         payload: {
             client: 'default',
             request: {
-                url: `/inventory/?${quantity ? 'ordering='+quantity+'&' : ''}${page ? 'page=' + page + '&' : ''}stock=${marker}`,
+                url: `/inventory/?stock=${marker}`,
                 method: "GET",
             }
         }
@@ -75,6 +75,34 @@ export function postRequest(data) {
             request: {
                 url: `/requests/`,
                 method: "POST",
+                data
+            }
+        }
+    };
+}
+
+export function getSettings() {
+    return {
+        type: types.POST_REQUEST,
+        payload: {
+            client: 'default',
+            request: {
+                url: `/inventory-settings/`,
+                method: "GET",
+            }
+        }
+    };
+}
+
+
+export function updateSetting(userId, data) {
+    return {
+        type: types.POST_REQUEST,
+        payload: {
+            client: 'default',
+            request: {
+                url: `/inventory-settingsUpdate/${userId}/`,
+                method: "PUT",
                 data
             }
         }

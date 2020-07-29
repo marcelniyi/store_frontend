@@ -12,6 +12,7 @@ import off from '../../assets/image/off.svg';
 import on from '../../assets/image/on.svg';
 import './Catalog.scss';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 import { getCat, addCat, getSubcat, addProduct, searchStock, getSearchList, getStock, getCurrentCat, editCat, editProd, deleteProd, deleteCat, paginate, checkStocks, createInventory, patchInventory, getProdsForStocks } from '../../actions/catalogActions';
@@ -26,6 +27,7 @@ class Catalog extends Component {
         openAddProductDialog: false,
         openAddStockCustomDialog: false,
         totalItems: '',
+        selectWidth: '60',
 
         items: [[], []],
         categoryProducts: [],
@@ -165,6 +167,14 @@ class Catalog extends Component {
             }
         })
     };
+
+    changeWidth =(e) => {
+        this.setState({
+            selectWidth: (8*e.target.value.length)+31,
+        })
+    }
+
+
     toggleDeleteDialog = (id = null) => {
         this.setState(({ openDeleteDialog }) => ({
             openDeleteDialog: !openDeleteDialog,
@@ -378,13 +388,13 @@ class Catalog extends Component {
             if (res.payload && res.payload.status && res.payload.status === 200) {
                 this.setState({
                     categoryProducts: res.payload.data
-                    
+
                 });
             }
         });
-        
+
     };
-    
+
     getCategories = () => {
         const { getCat } = this.props;
         let generalData = [],
@@ -1225,7 +1235,7 @@ class Catalog extends Component {
             noCategoryExist,
             openSearch,
             newVal
-            
+
         } = this.state;
         const { history: { search_list, location: { pathname } } } = this.props;
         let lastSlug = pathname.split('/')[pathname.split('/').length - 1];
@@ -1277,37 +1287,48 @@ class Catalog extends Component {
                                                     <button onClick={() => this.addNewItem('prod')}>+ add product</button>
                                                 </Fragment>
                                         }
-                                        
+
                                     </Fragment>
-                                    
+
                                 }
                             </div>
-                            
-                            
+
+
                             {(totalItemsCount === 0) && (items[0].length + items[1].length < 1)
                                 ?
                                 <h3 className={'empty_list'}>The list is empty</h3>
                                 :
-                                
+
                                 <div className="table_container transactions_columns">
                                     <ClickAwayListener onClickAway={this.handleToggleSearch}>
-                                        <div className="block_search">
-                                            <input
-                                                onKeyUp={(e) => this.handleSearchChange(e)}
-                                                onChange={this.searchOnChange}
-                                                value={newVal}
-                                                type="text"
-                                                placeholder="Search…"
-                                            />
-                                            {openSearch ?
-                                                <div className="autocomplete">
-                                                    {!!search_list && search_list[0] ?
-                                                        search_list.map((el, idx) => (
-                                                            <button onClick={() => this.handleSearchClick(el.id)} className='search_item' key={idx}>{el.product_name}</button>
-                                                        )) : <button disabled>No items</button>}
+
+                                           
+                                                <div class="row">
+                                                    <div class="col-xs-8">
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend search-panel">
+                                                                <select class="btn btn-primary selectBtn" onChange={this.changeWidth} style={{ width: `${this.state.selectWidth}px` }}>
+                                                                    <option value="ALL"> ALL</option>
+                                                                    <option value="All products">All products</option>
+                                                                    <option value="Categories">Categories</option>
+                                                                    <option value="Sub Categories">Sub Categories </option>
+                                                                    <option value="Brands">Brands </option>
+                                                                </select>
+                                                            </div>
+                                                            <input type="hidden" name="search_param" value="all" id="search_param" />
+                                                            <input type="text" class="form-control" name="x" placeholder="Search..." />
+                                                            <span class="input-group-btn">
+                                                                <button class="btn btn-primary" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                : null}
-                                        </div>
+                                            
+
+
+                                        
+
+
                                     </ClickAwayListener>
                                     <div className="table_header">
                                         <div className="table_row">
@@ -1324,7 +1345,7 @@ class Catalog extends Component {
                                             items.map((elem, id) => (
                                                 elem.map((el, index) => (
                                                     <div className="table_row" key={index}>
-                                                        <div className="row_item">
+                                                        <div className="row_item" style={{ height: 'auto' }}>
                                                             <>
                                                                 {['bottom'].map((placement) => (
                                                                     <>
@@ -1332,32 +1353,31 @@ class Catalog extends Component {
                                                                             key={placement}
                                                                             placement={placement}
                                                                             overlay={
-
                                                                                 <Tooltip id="tooltip-top">
-                                                                                    
+
                                                                                     <div>
-                                                                                        <Image src={el.image} style={{ width:"100%", height:"100%" }}/>
+                                                                                        <Image src={el.image} style={{ width: "100%", height: "100%" }} />
 
                                                                                     </div>
-                                                                                    <div className="row_item" style={{ textAlign:"left" }}>{el.description ?  el.description : ''}</div>
-                                                
+                                                                                    <div className="row_item" style={{ textAlign: "left" }}>{el.description ? el.description : ''}</div>
+
                                                                                 </Tooltip>
                                                                             }
                                                                         >
-                                                                                <span variant="light">
-                                                                                    {el.is_product || el.price ?
-                                                                                        <div>{el.name}</div>
-                                                                                        :
-                                                                                        <Link to='#' onClick={() => this.moveToSubcategory(el.id, el.name)}>{el.name}</Link>
-                                                                                    }
-                                                                                </span>
+                                                                            <span variant="light">
+                                                                                {el.is_product || el.price ?
+                                                                                    <div>{el.name}</div>
+                                                                                    :
+                                                                                    <Link to='#' onClick={() => this.moveToSubcategory(el.id, el.name)}>{el.name}</Link>
+                                                                                }
+                                                                            </span>
                                                                         </OverlayTrigger>{' '}
                                                                     </>
                                                                 ))}
                                                             </>
 
                                                         </div>
-                                                        <div className="row_item">{el.code ? '#' + el.code : '-' }</div>
+                                                        <div className="row_item">{el.code ? '#' + el.code : '-'}</div>
                                                         <div className="row_item">{el.unit_value || el.price ? 'RWF' + (el.unit_value || el.price) : '-'}</div>
                                                         <div className="row_item ">
 
@@ -1381,8 +1401,8 @@ class Catalog extends Component {
                                         }
                                     </div>
                                 </div>
-                        
-                            
+
+
                             }
                             {totalItemsCount < 10 ?
                                 null
