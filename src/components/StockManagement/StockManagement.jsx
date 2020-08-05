@@ -437,6 +437,8 @@ class StockManagement extends Component {
 </button>
                         
                     </div>
+
+                    {this.state.tab==2 ? '' :
                     <ClickAwayListener onClickAway={this.handleToggleSearch}>
                                 <div className="block_search">
                                     
@@ -477,6 +479,7 @@ class StockManagement extends Component {
                                         : null}
                                 </div>
                             </ClickAwayListener>
+                        }
                     {items.length > 0 ? <Fragment>
 
 
