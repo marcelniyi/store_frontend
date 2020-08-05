@@ -13,19 +13,7 @@ export function getStock(marker) {
         }
     };
 }
-//
-// export function switcher(marker, quantity) {
-//     return {
-//         type: types.SWITCHER,
-//         payload: {
-//             client: 'default',
-//             request: {
-//                 url: `/inventory/?stock=${marker}&ordering=${quantity}`,
-//                 method: "GET",
-//             }
-//         }
-//     };
-// }
+
 
 export function getSearchList(id) {
     return {
@@ -33,7 +21,7 @@ export function getSearchList(id) {
         payload: {
             client: 'default',
             request: {
-                url: `/inventory/?id__in=${id}`,
+                url: `/inventory/${id}`,
                 method: "GET",
             }
         }

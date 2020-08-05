@@ -18,7 +18,7 @@ class Head extends Component {
     render(){
         const name = localStorage.username;
         const email = localStorage.email;
-        console.log(localStorage);
+        
         return (
             <header className="header_wrapper">
                 <div>

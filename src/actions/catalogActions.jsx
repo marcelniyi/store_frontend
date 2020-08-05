@@ -225,3 +225,16 @@ export function getStock(marker, page, quantity) {
         }
     };
 }
+
+export function searchProducts(type, value) {
+    return {
+        type: types.GET_STOCK,
+        payload: {
+            client: 'default',
+            request: {
+                url: `/inventorySearching/?type=${type}&value=${value}`,
+                method: "GET",
+            }
+        }
+    };
+}

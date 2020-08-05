@@ -23,7 +23,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 class StockManagement extends Component {
     state = {
         loading: true,
-
         lowStock: 5,
         inStock: 6,
         outStock: 1,
@@ -47,7 +46,11 @@ class StockManagement extends Component {
         optionValue: null,
         switcherState: 'quantity',
         someVal: '',
-        newVal: ''
+        newVal: '',
+        selectType: 'prod',
+        selectWidth: 60,
+        items: '',
+
     };
 
     componentDidMount() {
@@ -78,7 +81,8 @@ class StockManagement extends Component {
                         loading: false,
                         activePage: page.selected,
                         totalPages: res.payload.data.total_pages,
-                        totalItems: res.payload.data.count
+                        totalItems: res.payload.data.count,
+                        items: res.payload.data.results
                     })
                 } else {
                     this.setState({
@@ -86,6 +90,7 @@ class StockManagement extends Component {
                         totalPages: res.payload.data.total_pages,
                         totalItems: res.payload.data.count,
                         activePage: (page ? page : 0),
+                        items: res.payload.data.results
                     })
                 }
             }
@@ -94,51 +99,54 @@ class StockManagement extends Component {
 
     changeOutStock = (e) => {
         this.setState({
-            outStock: e.target.value,
+            outStock: parseInt(e.target.value),
         })
     }
     changeInStock = (e) => {
         this.setState({
-            inStock: e.target.value,
+            inStock: parseInt(e.target.value),
         })
     }
     changeLowStock = (e) => {
         this.setState({
-            lowStock: e.target.value,
+            lowStock: parseInt(e.target.value),
+            inStock: parseInt(e.target.value) + 1,
         })
     }
 
 
     lowButtonPlus = () => {
         this.setState({
-            lowStock: this.state.lowStock + 1,
+            lowStock: parseInt(this.state.lowStock) + 1,
+            inStock: parseInt(this.state.lowStock) + 2,
         })
     }
     lowButtonMinus = () => {
         this.setState({
-            lowStock: this.state.lowStock - 1,
+            lowStock: parseInt(this.state.lowStock) - 1,
+            inStock: parseInt(this.state.lowStock) - 2,
         })
     }
 
     inButtonPlus = () => {
         this.setState({
-            inStock: this.state.inStock + 1,
+            inStock: parseInt(this.state.inStock) + 1,
         })
     }
     inButtonMinus = () => {
         this.setState({
-            inStock: this.state.inStock - 1,
+            inStock: parseInt(this.state.inStock) - 1,
         })
     }
 
     outButtonPlus = () => {
         this.setState({
-            outStock: this.state.outStock + 1,
+            outStock: parseInt(this.state.outStock) + 1,
         })
     }
     outButtonMinus = () => {
         this.setState({
-            outStock: this.state.outStock - 1,
+            outStock: parseInt(this.state.outStock) - 1,
         })
     }
 
@@ -169,6 +177,8 @@ class StockManagement extends Component {
             InfoIsOpen: false,
         }));
     };
+
+
     toggleRequestDialog = (name, quantity, id) => {
         this.setState(({ openRequestDialog }) => ({
             openRequestDialog: !openRequestDialog,
@@ -182,8 +192,6 @@ class StockManagement extends Component {
     changeTab = (tab, stock) => {
         const { getStock } = this.props;
 
-        tab == 0 ? this.setState({ stock: 'in' }) : tab == 1 ? this.setState({ stock: 'out' }) : this.setState({ stock: 'low' }) ;
-
         tab == 2 ? this.setState({ tab, totalItems: 1 }) : this.setState({ tab, stock });
 
 
@@ -193,13 +201,14 @@ class StockManagement extends Component {
                     loading: false,
                     activePage: 0,
                     totalPages: res.payload.data.total_pages,
-                    totalItems: res.payload.data.count
+                    totalItems: res.payload.data.count,
+                    items: res.payload.data.results
                 });
                 this.pagFunc();
-            }
-        })
 
-        
+                
+            }
+        })    
 };
 
     fetchSettings = () => {
@@ -214,7 +223,7 @@ class StockManagement extends Component {
                     userId: res.payload.data[0].id,
                 });
             }
-            console.log(res.payload.data[0].id);
+            
         })
 
     };
@@ -235,6 +244,13 @@ class StockManagement extends Component {
                 //alert("saved well");
                 
             }
+        })
+    }
+
+    changeWidth =(e) => {
+        this.setState({
+            selectType: e.target.value,
+            selectWidth: (8*e.target.value.length)+31,
         })
     }
 
@@ -269,7 +285,7 @@ class StockManagement extends Component {
     };
 
     searchOnChange = (e) => {
-        let regEx = /[^a-zA-Zа-яА-Я0-9]/g;
+        let regEx = /[^a-zA-Zа-яА-Я0-9\s]/g;
 
         this.setState({
             someVal: e.target.value.replace(regEx, ''),
@@ -278,20 +294,27 @@ class StockManagement extends Component {
     };
 
 
+
     handleSearchChange = (e) => {
         const { searchStock, search_list, getSearchList } = this.props;
         const { stock } = this.state;
         let inputValue = e.target.value.replace('#', '');
 
-
-
-        if (inputValue.length >= 3) {
-            searchStock(stock, inputValue).then(res => {
+        if (inputValue.length >= 2) {
+            searchStock(this.state.selectType, inputValue).then(res => {
                 if (res.payload && res.payload.status && res.payload.status === 200) {
-                    this.togglePopper();
+                    //this.togglePopper();
+                    this.setState({
+                        loading: false,
+                        activePage: 0,
+                        totalPages: res.payload.data.total_pages,
+                        totalItems: res.payload.data.count,
+                        items: res.payload.data.results
+                    });
+
                 }
             })
-        } else if (inputValue.length < 3) {
+        } else if (inputValue.length < 2) {
             this.setState({ openSearch: false });
             if (inputValue.length === 0) {
 
@@ -300,16 +323,20 @@ class StockManagement extends Component {
         }
 
         if (e.keyCode === 13 && inputValue.length > 2) {
-            let el_id = search_list.map(el => el.id);
-            getSearchList(el_id.join(',')).then(res => {
-                if (res.payload && res.payload.status && res.payload.status === 200) {
-                    this.setState({
-                        totalPages: res.payload.data.total_pages,
-                        totalItems: res.payload.data.count
-                    });
-                    this.handleToggleSearch();
-                }
-            })
+            //let el_id = search_list.results.map(el => el.id);
+            let el_id = search_list.results;
+
+
+            
+            // getSearchList(el_id.join(',')).then(res => {
+            //     if (res.payload && res.payload.status && res.payload.status === 200) {
+            //         this.setState({
+            //             totalPages: res.payload.data.total_pages,
+            //             totalItems: res.payload.data.count
+            //         });
+            //         this.handleToggleSearch();
+            //     }
+            // })
         } else if (e.keyCode === 13 && inputValue.length < 2) {
             return null
         }
@@ -321,11 +348,16 @@ class StockManagement extends Component {
             if (res.payload && res.payload.status && res.payload.status === 200) {
                 this.setState({
                     totalPages: res.payload.data.total_pages,
-                    totalItems: res.payload.data.count
+                    totalItems: res.payload.data.count,
+                    items: res.payload.data
+
                 });
+                console.log(res.payload.data);
                 this.handleToggleSearch();
             }
         })
+
+        
     };
 
     
@@ -353,9 +385,14 @@ class StockManagement extends Component {
             totalItems,
             role,
             stock,
-            newVal
+            newVal,
+            items
         } = this.state;
+        
         const { stock_list, search_list } = this.props;
+
+        // console.log(items.length);
+
         if (loading) return null;
         return (
             <div className="stock_management_page content_block">
@@ -370,7 +407,7 @@ class StockManagement extends Component {
                             className={tab === "0" ? "active" : ""}
                             onClick={() => this.changeTab("0", "in")}
                         >
-                            In stock
+                            Sufficient stock
                         </button>
 
                         <button
@@ -394,33 +431,54 @@ class StockManagement extends Component {
                         >
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-sliders" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
  <path fill-rule="evenodd" d="M7.429 1.525a6.593 6.593 0 011.142 0c.036.003.108.036.137.146l.289 1.105c.147.56.55.967.997 1.189.174.086.341.183.501.29.417.278.97.423 1.53.27l1.102-.303c.11-.03.175.016.195.046.219.31.41.641.573.989.014.031.022.11-.059.19l-.815.806c-.411.406-.562.957-.53 1.456a4.588 4.588 0 010 .582c-.032.499.119 1.05.53 1.456l.815.806c.08.08.073.159.059.19a6.494 6.494 0 01-.573.99c-.02.029-.086.074-.195.045l-1.103-.303c-.559-.153-1.112-.008-1.529.27-.16.107-.327.204-.5.29-.449.222-.851.628-.998 1.189l-.289 1.105c-.029.11-.101.143-.137.146a6.613 6.613 0 01-1.142 0c-.036-.003-.108-.037-.137-.146l-.289-1.105c-.147-.56-.55-.967-.997-1.189a4.502 4.502 0 01-.501-.29c-.417-.278-.97-.423-1.53-.27l-1.102.303c-.11.03-.175-.016-.195-.046a6.492 6.492 0 01-.573-.989c-.014-.031-.022-.11.059-.19l.815-.806c.411-.406.562-.957.53-1.456a4.587 4.587 0 010-.582c.032-.499-.119-1.05-.53-1.456l-.815-.806c-.08-.08-.073-.159-.059-.19a6.44 6.44 0 01.573-.99c.02-.029.086-.075.195-.045l1.103.303c.559.153 1.112.008 1.529-.27.16-.107.327-.204.5-.29.449-.222.851-.628.998-1.189l.289-1.105c.029-.11.101-.143.137-.146zM8 0c-.236 0-.47.01-.701.03-.743.065-1.29.615-1.458 1.261l-.29 1.106c-.017.066-.078.158-.211.224a5.994 5.994 0 00-.668.386c-.123.082-.233.09-.3.071L3.27 2.776c-.644-.177-1.392.02-1.82.63a7.977 7.977 0 00-.704 1.217c-.315.675-.111 1.422.363 1.891l.815.806c.05.048.098.147.088.294a6.084 6.084 0 000 .772c.01.147-.038.246-.088.294l-.815.806c-.474.469-.678 1.216-.363 1.891.2.428.436.835.704 1.218.428.609 1.176.806 1.82.63l1.103-.303c.066-.019.176-.011.299.071.213.143.436.272.668.386.133.066.194.158.212.224l.289 1.106c.169.646.715 1.196 1.458 1.26a8.094 8.094 0 001.402 0c.743-.064 1.29-.614 1.458-1.26l.29-1.106c.017-.066.078-.158.211-.224a5.98 5.98 0 00.668-.386c.123-.082.233-.09.3-.071l1.102.302c.644.177 1.392-.02 1.82-.63.268-.382.505-.789.704-1.217.315-.675.111-1.422-.364-1.891l-.814-.806c-.05-.048-.098-.147-.088-.294a6.1 6.1 0 000-.772c-.01-.147.039-.246.088-.294l.814-.806c.475-.469.679-1.216.364-1.891a7.992 7.992 0 00-.704-1.218c-.428-.609-1.176-.806-1.82-.63l-1.103.303c-.066.019-.176.011-.299-.071a5.991 5.991 0 00-.668-.386c-.133-.066-.194-.158-.212-.224L10.16 1.29C9.99.645 9.444.095 8.701.031A8.094 8.094 0 008 0zm1.5 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM11 8a3 3 0 11-6 0 3 3 0 016 0z"></path>
+
+ 
 </svg>{'  '} Stock settings
 </button>
                         
                     </div>
-                    {totalItems > 0 ? <Fragment>
-
-                        {tab == 2 ? '' :
-                            <ClickAwayListener onClickAway={this.handleToggleSearch}>
+                    <ClickAwayListener onClickAway={this.handleToggleSearch}>
                                 <div className="block_search">
-                                    <input
-                                        onKeyUp={(e) => this.handleSearchChange(e)}
-                                        onChange={this.searchOnChange}
-                                        value={newVal}
-                                        type="text"
-                                        placeholder="Search…"
-                                    />
+                                    
+
+                                                <div className="row">
+                                                    <div className="col-xs-8">
+                                                        <div className="input-group">
+                                                            <div className="input-group-prepend search-panel">
+                                                                <select className="btn btn-primary selectBtn" onChange={this.changeWidth} style={{ width: `${this.state.selectWidth}px` }}>
+                                                                    <option value="prod"> ALL</option>
+                                                                    <option value="all_products">All products</option>
+                                                                    <option value="categories">Categories</option>
+                                                                    <option value="sub_categories">Sub Categories </option>
+                                                                    <option value="brands">Brands </option>
+                                                                </select>
+                                                            </div>
+                                                            
+                                                            <input type="text" className="form-control" placeholder="Search..." 
+                                                                onKeyUp={(e) => this.handleSearchChange(e)}
+                                                                onChange={this.searchOnChange}
+                                                                value={newVal}
+                                                                
+                                                            />
+                                                            <span className="input-group-btn">
+                                                                <button className="btn btn-primary" type="button" onClick={ this.searchButton}><span class="glyphicon glyphicon-search"></span></button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                     {openSearch ?
                                         <div className="autocomplete">
-                                            {!!search_list && search_list[0] ?
-                                                search_list.map((el, idx) => (
+                                            {!!search_list.results && search_list.results[0] ?
+                                                search_list.results.map((el, idx) => (
                                                     <button onClick={() => this.handleSearchClick(el.id)} className='search_item' key={idx}>{el.product_name}</button>
                                                 )) : <button disabled>No items</button>}
                                         </div>
                                         : null}
                                 </div>
                             </ClickAwayListener>
-                        }
+                    {items.length > 0 ? <Fragment>
+
 
                         {tab === "0" &&
                             <div className="in_stock_wrapper">
@@ -447,7 +505,7 @@ class StockManagement extends Component {
                                             </div>
                                         </div>
                                         <div className="table_body">
-                                            {stock_list.results.map((row, idx) => (
+                                            {items.map((row, idx) => (
                                                 <div className="table_row" key={idx}>
                                                     <div className="row">
                                                         <div className="row_item">
@@ -553,7 +611,8 @@ class StockManagement extends Component {
 
                             </div>
                         }
-                        {tab === "1" &&
+
+                        {tab === "3" &&
                             <div className="out_of_stock_table">
                                 <div className="table_container transactions_columns">
                                     <div className="table_header">
@@ -575,7 +634,7 @@ class StockManagement extends Component {
                                         </div>
                                     </div>
                                     <div className="table_body">
-                                        {stock_list.results.map((row, idx) => (
+                                        {items.map((row, idx) => (
                                             <div className="table_row" key={idx}>
                                                 <div className="row_item">{row.product_name}</div>
                                                 <div className="row_item">
@@ -621,13 +680,84 @@ class StockManagement extends Component {
                                 }
                             </div>
                         }
+
+
+
+                        {tab === "1" &&
+                            <div className="out_of_stock_table">
+                                <div className="table_container transactions_columns">
+                                    <div className="table_header">
+                                        <div className="table_row">
+                                            <div className="row_item">Name</div>
+                                            <div className="row_item">Category</div>
+                                            <div className="row_item">Code</div>
+                                            <div className="row_item">
+                                                <button className="btn_sort stub">
+                                                    Quantity
+                                                <div className="sort">
+                                                        {/*<img src={sort_up} alt="sort_up"/>*/}
+                                                        {/*<img src={sort_down} alt="sort_down"/>*/}
+                                                    </div>
+                                                </button>
+                                            </div>
+                                            <div className="row_item">Unit value</div>
+                                            <div className="row_item">Actions</div>
+                                        </div>
+                                    </div>
+                                    <div className="table_body">
+                                         {items.map((row, idx) => (
+                                            <div className="table_row" key={idx}>
+                                                <div className="row_item">{row.product_name}</div>
+                                                <div className="row_item">
+                                                    {role !== 'user' ? <Link className={role !== "user" ? "" : "hided"} to={`/main/catalog/category/${row.product_subcategory[0][row.product_subcategory[0].length - 1].id}`}>{row.product_subcategory[1]}</Link>
+                                                        : <a className='hided'>{row.product_subcategory[1]}</a>}
+                                                </div>
+                                                {row.code ?
+                                                    <div className="row_item">#{row.code}</div> :
+                                                    <div className="row_item">-</div>}
+                                                <div className="row_item">
+                                                    <button disabled={row.quantity <= 0} onClick={() => this.toggleQuantityDialog('-', row.product_name, row.quantity, row.id)}>
+                                                        <img style={{ opacity: '.4' }} src={minus} alt="minus" />
+                                                    </button>
+                                                    <div>{row.quantity}</div>
+                                                    <button onClick={() => this.toggleQuantityDialog('+', row.product_name, row.quantity, row.id, row.id)}>
+                                                        <img src={plus} alt="plus" />
+                                                    </button>
+                                                </div>
+                                                <div className="row_item">RWF{row.price}</div>
+                                                {row.code ?
+                                                    <div className="row_item">
+                                                        <button className={role !== "user" ? "green_text btn_text" : "hided"} disabled={role === 'user'} onClick={() => this.toggleRequestDialog(row.product_name, row.quantity, row.id)}>
+                                                            Request supply
+                                                    </button>
+                                                    </div>
+                                                    : <div className="row_item">-</div>}
+                                            </div>
+                                        ))} 
+                                    </div>
+                                </div>
+                                {totalItems < 10 ? null :
+                                    <div className="pagination_info_wrapper">
+                                        <div className="pagination_block">
+                                            <Pagination
+                                                active={activePage}
+                                                pageCount={+totalPages, console.log(totalItems)}
+                                                onChange={this.doRequest}
+                                            />
+                                        </div>
+                                        <div className="info">Displaying page {activePage + 1} of {totalPages},
+                                        items {(activePage + 1) * 10 - 9} to {(activePage + 1) * 10 > totalItems ? totalItems : (activePage + 1) * 10} of {totalItems}</div>
+                                    </div>
+                                }
+                            </div>
+                        }
                     </Fragment> : <h3 className={'empty_list'}>The list is empty</h3>}
 
                     {tab === "2" &&
                         <div className="out_of_stock_table">
                         <Row className="inputFields">
                             <Col md="4" className="inputField">
-                                <span><a onClick={() => this.changeTab("0", "in")} id="stocklink">In stock</a> is greater than</span>
+                                <span><a onClick={() => this.changeTab("0", "in")} id="stocklink">Sufficient stock</a> is greater than</span>
                             </Col>
                             <Col md="8">
                                 <div class="stepper-input">
@@ -693,6 +823,8 @@ function mapStateToProps(state) {
         search_list: state.stock.search_list,
     }
 }
+
+
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         getStock,

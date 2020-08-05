@@ -15,7 +15,7 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
-import { getCat, addCat, getSubcat, addProduct, searchStock, getSearchList, getStock, getCurrentCat, editCat, editProd, deleteProd, deleteCat, paginate, checkStocks, createInventory, patchInventory, getProdsForStocks } from '../../actions/catalogActions';
+import { getCat, searchProducts, addCat, getSubcat, addProduct, searchStock, getSearchList, getStock, getCurrentCat, editCat, editProd, deleteProd, deleteCat, paginate, checkStocks, createInventory, patchInventory, getProdsForStocks } from '../../actions/catalogActions';
 
 
 class Catalog extends Component {
@@ -28,6 +28,8 @@ class Catalog extends Component {
         openAddStockCustomDialog: false,
         totalItems: '',
         selectWidth: '60',
+        otherData: [],
+        selectType: 'prod',
 
         items: [[], []],
         categoryProducts: [],
@@ -170,6 +172,7 @@ class Catalog extends Component {
 
     changeWidth =(e) => {
         this.setState({
+            selectType: e.target.value,
             selectWidth: (8*e.target.value.length)+31,
         })
     }
@@ -745,7 +748,7 @@ class Catalog extends Component {
             { history: { location: { pathname } } } = this.props;
         const { editProd } = this.props;
 
-        console.log(data);
+        
         editProd(targetId, data).then(res => {
             if (res.payload && res.payload.status && res.payload.status === 200) {
                 this.getCurrentCat(parentCatId);
@@ -1052,7 +1055,7 @@ class Catalog extends Component {
                     noCategoryExist: false
                 }));
             } else {
-                console.log(res);
+                
                 this.setState(({ prevCatId, prevCatName }) => ({
                     prevCatId: [],
                     prevCatName: [],
@@ -1128,7 +1131,7 @@ class Catalog extends Component {
     };
 
     searchOnChange = (e) => {
-        let regEx = /[^a-zA-Zа-яА-Я0-9]/g;
+        let regEx = /[^a-zA-Zа-яА-Я0-9\s]/g;
 
         this.setState({
             someVal: e.target.value.replace(regEx, ''),
@@ -1174,7 +1177,21 @@ class Catalog extends Component {
         }
 
     };
+
+    submitSearch = () => {
+        const { searchProducts } = this.props;
+        searchProducts(this.state.selectType, this.state.newVal).then(res => {
+            if (res.payload && res.payload.status && res.payload.status === 200) {
+                this.setState({
+                    items: [res.payload.data.results, []]
+                })
+            }
+        })
+
+    }
+
     handleSearchClick = (id) => {
+        
         const { getSearchList } = this.props;
         getSearchList(id).then(res => {
             if (res.payload && res.payload.status && res.payload.status === 200) {
@@ -1234,13 +1251,15 @@ class Catalog extends Component {
             minSupplyQuantityErrorText,
             noCategoryExist,
             openSearch,
-            newVal
+            newVal,
+            otherData
 
         } = this.state;
         const { history: { search_list, location: { pathname } } } = this.props;
         let lastSlug = pathname.split('/')[pathname.split('/').length - 1];
 
         console.log(items);
+        console.log(otherData);
 
         return (
             <div className="catalog_page content_block">
@@ -1308,17 +1327,21 @@ class Catalog extends Component {
                                                         <div class="input-group">
                                                             <div class="input-group-prepend search-panel">
                                                                 <select class="btn btn-primary selectBtn" onChange={this.changeWidth} style={{ width: `${this.state.selectWidth}px` }}>
-                                                                    <option value="ALL"> ALL</option>
-                                                                    <option value="All products">All products</option>
-                                                                    <option value="Categories">Categories</option>
-                                                                    <option value="Sub Categories">Sub Categories </option>
-                                                                    <option value="Brands">Brands </option>
+                                                                <option value="prod"> ALL</option>
+                                                                    <option value="all_products">All products</option>
+                                                                    <option value="categories">Categories</option>
+                                                                    <option value="sub_categories">Sub Categories </option>
+                                                                    <option value="brands">Brands </option>
                                                                 </select>
                                                             </div>
-                                                            <input type="hidden" name="search_param" value="all" id="search_param" />
-                                                            <input type="text" class="form-control" name="x" placeholder="Search..." />
+                                                            
+                                                            <input type="text" class="form-control" placeholder="Search..." 
+                                                                onKeyUp={(e) => this.handleSearchChange(e)}
+                                                                onChange={this.searchOnChange}
+                                                                value={newVal}
+                                                            />
                                                             <span class="input-group-btn">
-                                                                <button class="btn btn-primary" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                                                                <button class="btn btn-primary" type="button" onClick={ this.submitSearch}><span class="glyphicon glyphicon-search"></span></button>
                                                             </span>
                                                         </div>
                                                     </div>
@@ -1383,7 +1406,7 @@ class Catalog extends Component {
 
                                                             {el.code
                                                                 ?
-                                                                el.name === newProdName || el.is_product ?
+                                                                el.name === newProdName || el.is_product || el.brand ?
                                                                     <button className="green_text" onClick={() => this.checkStocks(el.id)}>Add to stock</button>
                                                                     :
                                                                     '-'
@@ -1729,6 +1752,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         getCat,
+        searchProducts,
         addCat,
         getSubcat,
         addProduct,

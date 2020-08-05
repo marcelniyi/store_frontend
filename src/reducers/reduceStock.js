@@ -14,7 +14,7 @@ export default function(state = INITIAL_STATE, action) {
             return {...state, search_list: action.payload.data};
         case types.POST_REQUEST_FAIL:
             return {...state, error: action.error.response.data};
-            case types.PATCH_QUANTITY_FAIL:
+        case types.PATCH_QUANTITY_FAIL:
             return {...state, error: action.error.response.data};
         default:
             return state;
