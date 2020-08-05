@@ -192,7 +192,7 @@ class StockManagement extends Component {
     changeTab = (tab, stock) => {
         const { getStock } = this.props;
 
-        tab == 2 ? this.setState({ tab, totalItems: 1 }) : this.setState({ tab, stock });
+        tab == 2 ? this.setState({ tab, totalItems: 1, loading: true }) : this.setState({ tab, stock, loading: true });
 
 
         getStock(stock).then(res => {

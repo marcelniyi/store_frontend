@@ -39,10 +39,10 @@ class Head extends Component {
                     </Dropdown.Header>
                     
                     <Dropdown.Divider />
-                    <Dropdown.Item href="#/action-2">Profile</Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">Accounts</Dropdown.Item>
-                    <Dropdown.Item href="/main/stock-settings">Stock managment settings</Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">Activity Log</Dropdown.Item>
+                    <Dropdown.Item href="/">Profile</Dropdown.Item>
+                    <Dropdown.Item href="/main/user-management">Accounts</Dropdown.Item>
+                    <Dropdown.Item href="/main/stock-management">Stock managment settings</Dropdown.Item>
+                    <Dropdown.Item href="/main/activity">Activity Log</Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item onClick={this.handleOut}>Sign Out</Dropdown.Item>
                 </Dropdown.Menu>
