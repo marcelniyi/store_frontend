@@ -21,6 +21,9 @@
   .panel_activity{
     padding-bottom: 12px;
   }
+  .tab_block{
+    padding-bottom: 30px;
+  }
   .activity_info_wrapper{
    >div{
      >div{
@@ -76,4 +79,10 @@
 thead tr th, .btn-sm {
   font-style: bold;
   font-weight: bold;
+}
+
+.btn-warning {
+  font-style: bold;
+  font-weight: bold;
+  color: white;
 }

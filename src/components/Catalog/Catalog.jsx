@@ -748,7 +748,7 @@ class Catalog extends Component {
             { history: { location: { pathname } } } = this.props;
         const { editProd } = this.props;
 
-        
+
         editProd(targetId, data).then(res => {
             if (res.payload && res.payload.status && res.payload.status === 200) {
                 this.getCurrentCat(parentCatId);
@@ -1055,7 +1055,7 @@ class Catalog extends Component {
                     noCategoryExist: false
                 }));
             } else {
-                
+
                 this.setState(({ prevCatId, prevCatName }) => ({
                     prevCatId: [],
                     prevCatName: [],
@@ -1191,7 +1191,7 @@ class Catalog extends Component {
     }
 
     handleSearchClick = (id) => {
-        
+
         const { getSearchList } = this.props;
         getSearchList(id).then(res => {
             if (res.payload && res.payload.status && res.payload.status === 200) {
@@ -1321,7 +1321,7 @@ class Catalog extends Component {
                                 <div className="table_container transactions_columns">
                                     <ClickAwayListener onClickAway={this.handleToggleSearch}>
 
-                                           
+
                                                 <div class="row">
                                                     <div class="col-xs-8">
                                                         <div class="input-group">
@@ -1334,22 +1334,22 @@ class Catalog extends Component {
                                                                     <option value="brands">Brands </option>
                                                                 </select>
                                                             </div>
-                                                            
-                                                            <input type="text" class="form-control" placeholder="Search..." 
+
+                                                            <input type="text" class="form-control" placeholder="Search..."
                                                                 onKeyUp={(e) => this.handleSearchChange(e)}
                                                                 onChange={this.searchOnChange}
                                                                 value={newVal}
                                                             />
                                                             <span class="input-group-btn">
-                                                                <button class="btn btn-primary" type="button" onClick={ this.submitSearch}><span class="glyphicon glyphicon-search"></span></button>
+                                                                <button class="btn btn-primary search-btn" type="button" onClick={ this.submitSearch}>Search</button>
                                                             </span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            
 
 
-                                        
+
+
 
 
                                     </ClickAwayListener>

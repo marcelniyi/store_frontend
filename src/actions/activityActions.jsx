@@ -7,7 +7,7 @@ export function getActivity(activity, page) {
             client: 'default',
             request: {
                 //url: `/clinic-logs/?page=${page}&page_size=10${activity ? `&activity=${activity}` : ''}`,
-                url: `/requests/?page=${page}&page_size=10${activity ? ` $status=${activity}`:''}`,
+                url: `/requests/?page=${page}&page_size=10`,
                 method: 'get'
             }
         }
