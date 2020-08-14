@@ -19,7 +19,7 @@ class Panel extends Component {
     componentDidUpdate(prevProps) {
         prevProps.location !== this.props.location && this.setState({ reloading: true })
     }
-    
+
     render() {
         const role = localStorage.role;
         return (
@@ -28,7 +28,7 @@ class Panel extends Component {
                     <Link to="/main/dashboard" className="logo_panel">
                         <img src={logo_sidebar} alt="logo_sidebar"/>
                     </Link>
-                    <div className="block_link">
+                    <div className="block_link sticky-top">
                         {role !== 'user' && <NavLink to="/main/dashboard"><img src={dashboard} alt="dashboard"/></NavLink>}
                         {role !== 'user' && <NavLink to="/main/catalog"><img src={catalog} alt="catalog"/></NavLink>}
                         {role !== 'user' && <NavLink to="/main/shoppingCart"><img src={cart} alt="catalog"/></NavLink>}

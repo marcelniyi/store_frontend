@@ -49,7 +49,7 @@ class StockManagement extends Component {
         newVal: '',
         selectType: 'prod',
         selectWidth: 60,
-        items: '',
+        items: [],
 
     };
 
@@ -82,16 +82,19 @@ class StockManagement extends Component {
                         activePage: page.selected,
                         totalPages: res.payload.data.total_pages,
                         totalItems: res.payload.data.count,
-                        items: res.payload.data.results
+                        //items: res.payload.data.results
                     })
+
+                    this.soltData(res.payload.data.results);
                 } else {
                     this.setState({
                         loading: false,
                         totalPages: res.payload.data.total_pages,
                         totalItems: res.payload.data.count,
                         activePage: (page ? page : 0),
-                        items: res.payload.data.results
+                        //items: res.payload.data.results
                     })
+                    this.soltData(res.payload.data.results);
                 }
             }
         })
@@ -208,6 +211,47 @@ class StockManagement extends Component {
         }));
     };
 
+    soltData = (data) => {
+
+      const groupByCategories = data.reduce((catsSoFar, { product_subcategory,
+         product_name,
+         id,
+         code,
+         quantity,
+         price,
+        total_price,
+        auto_supply,
+        supply_quantity,
+        min_supply_quantity,
+        deleted,
+        description,
+        product_description
+       }) => {
+        if (!catsSoFar[product_subcategory]) catsSoFar[product_subcategory] = [];
+        catsSoFar[product_subcategory].push(
+          {"product_subcategory":product_subcategory,
+          "product_name":product_name,
+          "id":id,
+          "code":code,
+          "quantity":quantity,
+          "price": price,
+          "total_price":total_price,
+          "auto_supply":auto_supply,
+          "supply_quantity":supply_quantity,
+          "min_supply_quantity":min_supply_quantity,
+          "deleted":deleted,
+          "description":description,
+          "product_description":product_description});
+        return catsSoFar;
+      }, {});
+
+      //console.log(JSON.stringify(groupByCategories));
+
+      this.setState({
+        items: groupByCategories
+      })
+    }
+
     changeTab = (tab, stock) => {
         const { getStock } = this.props;
 
@@ -221,11 +265,10 @@ class StockManagement extends Component {
                     activePage: 0,
                     totalPages: res.payload.data.total_pages,
                     totalItems: res.payload.data.count,
-                    items: res.payload.data.results
+                    //items: res.payload.data.results
                 });
                 this.pagFunc();
-
-
+                this.soltData(res.payload.data.results);
             }
         })
 };
@@ -328,8 +371,9 @@ class StockManagement extends Component {
                         activePage: 0,
                         totalPages: res.payload.data.total_pages,
                         totalItems: res.payload.data.count,
-                        items: res.payload.data.results
+                        //items: res.payload.data.results
                     });
+                    this.soltData(res.payload.data.results);
 
                 }
             })
@@ -410,7 +454,22 @@ class StockManagement extends Component {
 
         const { stock_list, search_list } = this.props;
 
-        // console.log(items.length);
+
+
+
+        let data = this.state.items;
+
+        let valuesPage = Object.keys(data).length;
+
+
+        Object.keys(data).map(function(key, index){
+          console.log(data[key][0].product_subcategory[1])
+          data[key].map((raw, index) => {
+            console.log(raw.product_name)
+          })
+        });
+
+
 
         if (loading) return null;
         return (
@@ -419,7 +478,7 @@ class StockManagement extends Component {
 
 
 
-                <div className="content_page">
+                <div className="content_page sticky-top">
 
                     <div className="tab_block">
                     <button
@@ -479,6 +538,7 @@ class StockManagement extends Component {
                                                                 onKeyUp={(e) => this.handleSearchChange(e)}
                                                                 onChange={this.searchOnChange}
                                                                 value={newVal}
+                                                                style={{ width: '450px' }}
 
                                                             />
                                                             <span className="input-group-btn">
@@ -499,167 +559,73 @@ class StockManagement extends Component {
                                 </div>
                             </ClickAwayListener>
                         }
-                    {items.length > 0 ? <Fragment>
+                    {valuesPage > 0 ? <Fragment>
 
 
                         {tab === "0" &&
-                            <div className="in_stock_wrapper">
-                                <div className="in_stock_table">
-                                    <div className="table_container transactions_columns">
-                                        <div className="table_header">
-                                            <div className="table_row">
-                                                <div className="row">
-                                                    <div className="row_item">Name</div>
-                                                    <div className="row_item">Code</div>
-                                                    <div className="row_item">
-                                                        <button onClick={this.handleSwitch} className="btn_sort">
-                                                            Quantity
-                                                        <div className="sort">
-                                                                <img src={sort_up} alt="sort_up" />
-                                                                <img src={sort_down} alt="sort_down" />
-                                                            </div>
-                                                        </button>
-                                                    </div>
-                                                    <div className="row_item">Unit value</div>
-                                                    <div className="row_item">Total value</div>
-                                                    <div className="row_item">Actions</div>
+                        <div className="out_of_stock_table">
+                            <div className="table_container transactions_columns">
+                                <div className="table_header">
+                                    <div className="table_row">
+                                        <div className="row_item" style={{ width: '30%' }}>Name</div>
+                                        <div className="row_item" style={{ width: '18%' }}>Category</div>
+                                        <div className="row_item">Code</div>
+                                        <div className="row_item">
+                                            <button className="btn_sort stub">
+                                                Quantity
+                                            <div className="sort">
+                                                    {/*<img src={sort_up} alt="sort_up"/>*/}
+                                                    {/*<img src={sort_down} alt="sort_down"/>*/}
                                                 </div>
-                                            </div>
+                                            </button>
                                         </div>
-                                        <div className="table_body">
-                                            {items.map((row, idx) => (
-                                                <div className="table_row" key={idx}>
-                                                    <div className="row">
-                                                        <div className="row_item">
-                                                            <>
-                                                                {['bottom'].map((placement) => (
-                                                                    <>
-                                                                        <OverlayTrigger
-                                                                            key={placement}
-                                                                            placement={placement}
-                                                                            overlay={
-
-                                                                                <Tooltip id="tooltip-top">
-
-                                                                                    <div>
-                                                                                        <Image src={row.image} style={{ width: "100%", height: "100%" }} />
-
-                                                                                    </div>
-                                                                                    <div className="row_item" style={{ textAlign: "left" }}>{row.description ? row.description : ''}</div>
-                                                                                </Tooltip>
-                                                                            }
-                                                                        >
-                                                                            <span>
-                                                                                {row.product_name}
-                                                                            </span>
-
-                                                                        </OverlayTrigger>{' '}
-                                                                    </>
-                                                                ))}
-                                                            </>
-
-                                                        </div>
-                                                        {row.code ?
-                                                            <div className="row_item">#{row.code}</div> :
-                                                            <div className="row_item">-</div>}
-                                                        <div className="row_item">
-                                                            <button disabled={row.quantity <= 0}
-                                                                onClick={() => this.toggleQuantityDialog('-', row.product_name, row.quantity, row.id)}>
-                                                                <img src={minus} alt="minus" />
-                                                            </button>
-                                                            <div>{row.quantity}</div>
-                                                            <button onClick={() => this.toggleQuantityDialog('+', row.product_name, row.quantity, row.id)}>
-                                                                <img src={plus} alt="plus" />
-                                                            </button>
-                                                        </div>
-                                                        <div className="row_item">RWF{row.price}</div>
-
-                                                        <div className="row_item">RWF{row.total_price}</div>
-                                                        <div className="row_item">
-                                                            {row.deleted && row.code ? <div className="btn_text">Not available</div> :
-                                                                row.code ?
-                                                                    <div className="row_item">
-                                                                        <button className={role !== "user" ? "green_text btn_text" : "hided"} disabled={role === 'user'} onClick={() => this.toggleRequestDialog(row.product_name, row.quantity, row.id)}>
-                                                                            REQUEST SUPPLY
-                                                                    </button>
-                                                                    </div>
-                                                                    : <div className="row_item">-</div>}
-                                                            <button
-                                                                className={InfoIsOpen && product_id === row.id ? "btn_arrow_open btn_arrow" : "btn_arrow"}
-                                                                onClick={() => product_id === row.id ? this.closeMenu(row.id) : this.openMenu(row.id)}><img src={roll_down} alt="roll_down" />
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    <div className={InfoIsOpen && product_id === row.id ? "info info_open" : "info"}>
-                                                        <div className="row_item">
-                                                            <span>Category</span>
-                                                            {role !== 'user' ? <Link className={role !== "user" ? "" : "hided"} to={`/main/catalog/category/${row.product_subcategory[0][row.product_subcategory[0].length - 1].id}`}>{row.product_subcategory[1]}</Link>
-                                                                : <a className='hided'>{row.product_subcategory[1]}</a>}
-                                                        </div>
-                                                        <div className="row_item">
-                                                            <span>Auto supply</span>
-                                                            {row.auto_supply ?
-                                                                <img src={ok} alt="ok" /> :
-                                                                <img src={no} alt="no" />
-                                                            }
-                                                        </div>
-                                                        <div className="row_item">
-                                                            <span>Min. qty</span>
-                                                            {row.deleted ? '-' : row.min_supply_quantity}
-                                                        </div>
-                                                        <div className="row_item">
-                                                            <span>Auto supply qty</span>
-                                                            {row.deleted ? '-' : row.supply_quantity}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
+                                        <div className="row_item">Unit value</div>
+                                        <div className="row_item">Actions</div>
                                     </div>
-                                    {totalItems < 10 ? null :
-                                        <div className="pagination_info_wrapper">
-                                            <div className="pagination_block">
-                                                <Pagination
-                                                    active={activePage}
-                                                    pageCount={+totalPages}
-                                                    onChange={this.pagFunc}
-                                                />
-                                            </div>
-                                            <div className="info">Displaying page {activePage + 1} of {totalPages},
-                                            items {(activePage + 1) * 10 - 9} to {(activePage + 1) * 10 > totalItems ? totalItems : (activePage + 1) * 10} of {totalItems}</div>
-                                        </div>
-                                    }
                                 </div>
 
-                            </div>
-                        }
+                                <div className="table_body">
+                                {
+                                  Object.keys(data).map((key, index) => {
 
-                        {tab === "3" &&
-                            <div className="out_of_stock_table">
-                                <div className="table_container transactions_columns">
-                                    <div className="table_header">
-                                        <div className="table_row">
-                                            <div className="row_item">Name</div>
-                                            <div className="row_item">Category</div>
-                                            <div className="row_item">Code</div>
-                                            <div className="row_item">
-                                                <button className="btn_sort stub">
-                                                    Quantity
-                                                <div className="sort">
-                                                        {/*<img src={sort_up} alt="sort_up"/>*/}
-                                                        {/*<img src={sort_down} alt="sort_down"/>*/}
-                                                    </div>
-                                                </button>
-                                            </div>
-                                            <div className="row_item">Unit value</div>
-                                            <div className="row_item">Actions</div>
-                                        </div>
-                                    </div>
-                                    <div className="table_body">
-                                        {items.map((row, idx) => (
-                                            <div className="table_row" key={idx}>
-                                                <div className="row_item">{row.product_name}</div>
-                                                <div className="row_item">
+                                    return(
+                                      <div>
+                                        <h5 class="catlisting">{ data[key][0].product_subcategory[1] }</h5>
+
+                                        { data[key].map((row, idx) => (
+                                            <div className="table_row" key={idx} id="responsive-row">
+
+                                                <div className="row_item" style={{ width: '30%' }}>
+
+                                                <>
+                                                    {['bottom'].map((placement) => (
+                                                        <>
+                                                            <OverlayTrigger
+                                                                key={placement}
+                                                                placement={placement}
+                                                                overlay={
+
+                                                                    <Tooltip id="tooltip-top">
+
+                                                                        <div>
+                                                                            <Image src={row.image} style={{ width: "100%", height: "100%" }} />
+
+                                                                        </div>
+                                                                        <div className="row_item" style={{ textAlign: "left" }}>{row.description ? row.description : ''}</div>
+                                                                    </Tooltip>
+                                                                }
+                                                            >
+                                                                <span>
+                                                                    {row.product_name}
+                                                                </span>
+
+                                                            </OverlayTrigger>{' '}
+                                                        </>
+                                                    ))}
+                                                </>
+
+                                                </div>
+                                                <div className="row_item" style={{ width: '18%' }}>
                                                     {role !== 'user' ? <Link className={role !== "user" ? "" : "hided"} to={`/main/catalog/category/${row.product_subcategory[0][row.product_subcategory[0].length - 1].id}`}>{row.product_subcategory[1]}</Link>
                                                         : <a className='hided'>{row.product_subcategory[1]}</a>}
                                                 </div>
@@ -684,53 +650,224 @@ class StockManagement extends Component {
                                                     </div>
                                                     : <div className="row_item">-</div>}
                                             </div>
-                                        ))}
+                                        ))
+                                      }
+
+                                      </div>
+                                  );
+
+
+                                  })
+                                }
+
+
+                                </div>
+
+
+                            </div>
+
+
+                            {totalItems < 10 ? null :
+                                <div className="pagination_info_wrapper">
+                                    <div className="pagination_block">
+                                        <Pagination
+                                            active={activePage}
+                                            pageCount={+totalPages, console.log(totalItems)}
+                                            onChange={this.doRequest}
+                                        />
+                                    </div>
+                                    <div className="info">Displaying page {activePage + 1} of {totalPages},
+                                    items {(activePage + 1) * 10 - 9} to {(activePage + 1) * 10 > totalItems ? totalItems : (activePage + 1) * 10} of {totalItems}</div>
+                                </div>
+                            }
+                        </div>
+                        }
+
+                        {tab === "3" &&
+                        <div className="out_of_stock_table">
+                            <div className="table_container transactions_columns">
+                                <div className="table_header">
+                                    <div className="table_row">
+                                        <div className="row_item" style={{ width: '30%' }}>Name</div>
+                                        <div className="row_item" style={{ width: '18%' }}>Category</div>
+                                        <div className="row_item">Code</div>
+                                        <div className="row_item">
+                                            <button className="btn_sort stub">
+                                                Quantity
+                                            <div className="sort">
+                                                    {/*<img src={sort_up} alt="sort_up"/>*/}
+                                                    {/*<img src={sort_down} alt="sort_down"/>*/}
+                                                </div>
+                                            </button>
+                                        </div>
+                                        <div className="row_item">Unit value</div>
+                                        <div className="row_item">Actions</div>
                                     </div>
                                 </div>
-                                {totalItems < 10 ? null :
-                                    <div className="pagination_info_wrapper">
-                                        <div className="pagination_block">
-                                            <Pagination
-                                                active={activePage}
-                                                pageCount={+totalPages, console.log(totalItems)}
-                                                onChange={this.doRequest}
-                                            />
-                                        </div>
-                                        <div className="info">Displaying page {activePage + 1} of {totalPages},
-                                        items {(activePage + 1) * 10 - 9} to {(activePage + 1) * 10 > totalItems ? totalItems : (activePage + 1) * 10} of {totalItems}</div>
-                                    </div>
+                                <div className="table_body">
+                                {
+                                  Object.keys(data).map((key, index) => {
+
+                                    return(
+                                      <div>
+                                        <h5>{ data[key][0].product_subcategory[1] }</h5>
+
+                                        { data[key].map((row, idx) => (
+                                            <div className="table_row" key={idx} id="responsive-row">
+
+                                                <div className="row_item" style={{ width: '30%' }}>
+
+                                                <>
+                                                    {['bottom'].map((placement) => (
+                                                        <>
+                                                            <OverlayTrigger
+                                                                key={placement}
+                                                                placement={placement}
+                                                                overlay={
+
+                                                                    <Tooltip id="tooltip-top">
+
+                                                                        <div>
+                                                                            <Image src={row.image} style={{ width: "100%", height: "100%" }} />
+
+                                                                        </div>
+                                                                        <div className="row_item" style={{ textAlign: "left" }}>{row.description ? row.description : ''}</div>
+                                                                    </Tooltip>
+                                                                }
+                                                            >
+                                                                <span>
+                                                                    {row.product_name}
+                                                                </span>
+
+                                                            </OverlayTrigger>{' '}
+                                                        </>
+                                                    ))}
+                                                </>
+
+                                                </div>
+                                                <div className="row_item" style={{ width: '18%' }}>
+                                                    {role !== 'user' ? <Link className={role !== "user" ? "" : "hided"} to={`/main/catalog/category/${row.product_subcategory[0][row.product_subcategory[0].length - 1].id}`}>{row.product_subcategory[1]}</Link>
+                                                        : <a className='hided'>{row.product_subcategory[1]}</a>}
+                                                </div>
+                                                {row.code ?
+                                                    <div className="row_item">#{row.code}</div> :
+                                                    <div className="row_item">-</div>}
+                                                <div className="row_item">
+                                                    <button disabled={row.quantity <= 0} onClick={() => this.toggleQuantityDialog('-', row.product_name, row.quantity, row.id)}>
+                                                        <img style={{ opacity: '.4' }} src={minus} alt="minus" />
+                                                    </button>
+                                                    <div>{row.quantity}</div>
+                                                    <button onClick={() => this.toggleQuantityDialog('+', row.product_name, row.quantity, row.id, row.id)}>
+                                                        <img src={plus} alt="plus" />
+                                                    </button>
+                                                </div>
+                                                <div className="row_item">RWF{row.price}</div>
+                                                {row.code ?
+                                                    <div className="row_item">
+                                                        <button className={role !== "user" ? "green_text btn_text" : "hided"} disabled={role === 'user'} onClick={() => this.toggleRequestDialog(row.product_name, row.quantity, row.id)}>
+                                                            Request supply
+                                                    </button>
+                                                    </div>
+                                                    : <div className="row_item">-</div>}
+                                            </div>
+                                        ))
+                                      }
+
+                                      </div>
+                                  );
+
+
+                                  })
                                 }
+
+
+                                </div>
+
+
                             </div>
+
+
+                            {totalItems < 10 ? null :
+                                <div className="pagination_info_wrapper">
+                                    <div className="pagination_block">
+                                        <Pagination
+                                            active={activePage}
+                                            pageCount={+totalPages, console.log(totalItems)}
+                                            onChange={this.doRequest}
+                                        />
+                                    </div>
+                                    <div className="info">Displaying page {activePage + 1} of {totalPages},
+                                    items {(activePage + 1) * 10 - 9} to {(activePage + 1) * 10 > totalItems ? totalItems : (activePage + 1) * 10} of {totalItems}</div>
+                                </div>
+                            }
+                        </div>
                         }
 
 
 
                         {tab === "1" &&
-                            <div className="out_of_stock_table">
-                                <div className="table_container transactions_columns">
-                                    <div className="table_header">
-                                        <div className="table_row">
-                                            <div className="row_item">Name</div>
-                                            <div className="row_item">Category</div>
-                                            <div className="row_item">Code</div>
-                                            <div className="row_item">
-                                                <button className="btn_sort stub">
-                                                    Quantity
-                                                <div className="sort">
-                                                        {/*<img src={sort_up} alt="sort_up"/>*/}
-                                                        {/*<img src={sort_down} alt="sort_down"/>*/}
-                                                    </div>
-                                                </button>
-                                            </div>
-                                            <div className="row_item">Unit value</div>
-                                            <div className="row_item">Actions</div>
+                        <div className="out_of_stock_table">
+                            <div className="table_container transactions_columns">
+                                <div className="table_header">
+                                    <div className="table_row">
+                                        <div className="row_item" style={{ width: '30%' }}>Name</div>
+                                        <div className="row_item" style={{ width: '18%' }}>Category</div>
+                                        <div className="row_item">Code</div>
+                                        <div className="row_item">
+                                            <button className="btn_sort stub">
+                                                Quantity
+                                            <div className="sort">
+                                                    {/*<img src={sort_up} alt="sort_up"/>*/}
+                                                    {/*<img src={sort_down} alt="sort_down"/>*/}
+                                                </div>
+                                            </button>
                                         </div>
+                                        <div className="row_item">Unit value</div>
+                                        <div className="row_item">Actions</div>
                                     </div>
-                                    <div className="table_body">
-                                         {items.map((row, idx) => (
-                                            <div className="table_row" key={idx}>
-                                                <div className="row_item">{row.product_name}</div>
-                                                <div className="row_item">
+                                </div>
+                                <div className="table_body">
+                                {
+                                  Object.keys(data).map((key, index) => {
+
+                                    return(
+                                      <div>
+                                        <h5>{ data[key][0].product_subcategory[1] }</h5>
+
+                                        { data[key].map((row, idx) => (
+                                            <div className="table_row" key={idx} id="responsive-row">
+
+                                                <div className="row_item" style={{ width: '30%' }}>
+
+                                                <>
+                                                    {['bottom'].map((placement) => (
+                                                        <>
+                                                            <OverlayTrigger
+                                                                key={placement}
+                                                                placement={placement}
+                                                                overlay={
+
+                                                                    <Tooltip id="tooltip-top">
+
+                                                                        <div>
+                                                                            <Image src={row.image} style={{ width: "100%", height: "100%" }} />
+
+                                                                        </div>
+                                                                        <div className="row_item" style={{ textAlign: "left" }}>{row.description ? row.description : ''}</div>
+                                                                    </Tooltip>
+                                                                }
+                                                            >
+                                                                <span>
+                                                                    {row.product_name}
+                                                                </span>
+
+                                                            </OverlayTrigger>{' '}
+                                                        </>
+                                                    ))}
+                                                </>
+
+                                                </div>
+                                                <div className="row_item" style={{ width: '18%' }}>
                                                     {role !== 'user' ? <Link className={role !== "user" ? "" : "hided"} to={`/main/catalog/category/${row.product_subcategory[0][row.product_subcategory[0].length - 1].id}`}>{row.product_subcategory[1]}</Link>
                                                         : <a className='hided'>{row.product_subcategory[1]}</a>}
                                                 </div>
@@ -755,25 +892,42 @@ class StockManagement extends Component {
                                                     </div>
                                                     : <div className="row_item">-</div>}
                                             </div>
-                                        ))}
-                                    </div>
-                                </div>
-                                {totalItems < 10 ? null :
-                                    <div className="pagination_info_wrapper">
-                                        <div className="pagination_block">
-                                            <Pagination
-                                                active={activePage}
-                                                pageCount={+totalPages, console.log(totalItems)}
-                                                onChange={this.doRequest}
-                                            />
-                                        </div>
-                                        <div className="info">Displaying page {activePage + 1} of {totalPages},
-                                        items {(activePage + 1) * 10 - 9} to {(activePage + 1) * 10 > totalItems ? totalItems : (activePage + 1) * 10} of {totalItems}</div>
-                                    </div>
+                                        ))
+                                      }
+
+                                      </div>
+                                  );
+
+
+                                  })
                                 }
+
+
+                                </div>
+
+
                             </div>
+
+
+                            {totalItems < 10 ? null :
+                                <div className="pagination_info_wrapper">
+                                    <div className="pagination_block">
+                                        <Pagination
+                                            active={activePage}
+                                            pageCount={+totalPages, console.log(totalItems)}
+                                            onChange={this.doRequest}
+                                        />
+                                    </div>
+                                    <div className="info">Displaying page {activePage + 1} of {totalPages},
+                                    items {(activePage + 1) * 10 - 9} to {(activePage + 1) * 10 > totalItems ? totalItems : (activePage + 1) * 10} of {totalItems}</div>
+                                </div>
+                            }
+                        </div>
                         }
-                    </Fragment> : <h3 className={'empty_list'}>The list is empty</h3>}
+                    </Fragment> :
+                     tab === "2" ? '' : <h3 className={'empty_list'}>The list is empty</h3>
+
+                  }
 
                     {tab === "2" &&
                         <div className="out_of_stock_table">

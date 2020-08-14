@@ -1339,6 +1339,7 @@ class Catalog extends Component {
                                                                 onKeyUp={(e) => this.handleSearchChange(e)}
                                                                 onChange={this.searchOnChange}
                                                                 value={newVal}
+                                                                style={{ width: '450px' }}
                                                             />
                                                             <span class="input-group-btn">
                                                                 <button class="btn btn-primary search-btn" type="button" onClick={ this.submitSearch}>Search</button>

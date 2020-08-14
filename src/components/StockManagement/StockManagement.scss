@@ -51,60 +51,7 @@
         .table_header{
 
         }
-        .row{
-          width: 100%;
-          display: flex;
-          height: 60px;
-          align-items: center;
-          & > :first-child {
-            width: 18%;
-          }
-          & > :nth-child(2) {
-            width: 18%;
-          }
-          & > :nth-child(3) {
-            width: 16%;
-            display: flex;
-            align-items: center;
-            button{
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              cursor: pointer;
-            }
-            div{
-              height: 24px;
-              width: 36px;
-              border-radius: 2px;
-              background-color: #EBF4FE;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            }
-          }
-          & > :nth-child(4) {
-            width: 16%;
-          }
-          & > :nth-child(5) {
-            width: 16%;
-          }
-          & > :last-child {
-            width: 16%;
-            display: flex;
-            justify-content: space-between;
-            .btn_text{
-              font-family: "MontSemiBold",sans-serif;
-              font-size: 10px;
-              text-transform: uppercase;
-            }
-            .btn_arrow{
-              margin-right: 12px;
-              img{
-                transition: all .3s linear;
-              }
-            }
-          }
-        }
+
         .info{
           transition: all .2s linear;
           height: 0;
@@ -187,11 +134,11 @@
     .transactions_columns {
       .table_row {
         & > :first-child {
-          width: 18%;
+          width: 30%;
 
         }
         & > :nth-child(2) {
-          width: 30%;
+          width: 18%;
           a{
             color: #3796F6;
             font-family: "MontSemiBold",sans-serif;
@@ -365,4 +312,17 @@
 
 .search-btn {
   margin-left: -5px;
+}
+
+#responsive-row {
+  height:60%;
+  max-height:auto;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-right: 20px;
+}
+
+.catlisting{
+  color: rgba(32, 69, 105, 0.5);
+  font-size: 20px;
 }
