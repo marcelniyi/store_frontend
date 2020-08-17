@@ -7,6 +7,7 @@
     margin-bottom: 72px;
     box-shadow: 0 4px 16px 0 rgba(154,166,178,0.15);
     border-radius: 10px;
+    min-width: 60%;
   }
   .block_search{
     margin: 32px 0 16px;
@@ -325,4 +326,10 @@
 .catlisting{
   color: rgba(32, 69, 105, 0.5);
   font-size: 20px;
+}
+
+.out_of_stock_table{
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
 }

@@ -478,8 +478,9 @@ class StockManagement extends Component {
 
 
 
-                <div className="content_page sticky-top">
+                <div className="content_page">
 
+                <div className="sticky-top">
                     <div className="tab_block">
                     <button
                             className={tab === "0" ? "active" : ""}
@@ -559,6 +560,7 @@ class StockManagement extends Component {
                                 </div>
                             </ClickAwayListener>
                         }
+                      </div>
                     {valuesPage > 0 ? <Fragment>
 
 
