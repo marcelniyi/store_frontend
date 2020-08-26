@@ -35,6 +35,8 @@ class Panel extends Component {
                         <NavLink to="/main/stock-management"><img src={products} alt="products"/></NavLink>
                         {role === 'clinic' && <NavLink to="/main/user-management"><img src={user_management} alt="user_management"/></NavLink>}
                         {role !== 'user' && <NavLink to="/main/activity"><img src={activity} alt="activity"/></NavLink>}
+                        {role !== 'user' && <NavLink to="/store" target="_blank"><img src={activity} alt="activity"/></NavLink>}
+
                     </div>
                 </div>
             </div>

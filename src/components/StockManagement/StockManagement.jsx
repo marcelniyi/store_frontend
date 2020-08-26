@@ -581,7 +581,7 @@ class StockManagement extends Component {
                                                 </div>
                                             </button>
                                         </div>
-                                        <div className="row_item">Unit value</div>
+
                                         <div className="row_item">Actions</div>
                                     </div>
                                 </div>
@@ -643,7 +643,7 @@ class StockManagement extends Component {
                                                         <img src={plus} alt="plus" />
                                                     </button>
                                                 </div>
-                                                <div className="row_item">RWF{row.price}</div>
+
                                                 {row.code ?
                                                     <div className="row_item">
                                                         <button className={role !== "user" ? "green_text btn_text" : "hided"} disabled={role === 'user'} onClick={() => this.toggleRequestDialog(row.product_name, row.quantity, row.id)}>
@@ -702,7 +702,7 @@ class StockManagement extends Component {
                                                 </div>
                                             </button>
                                         </div>
-                                        <div className="row_item">Unit value</div>
+
                                         <div className="row_item">Actions</div>
                                     </div>
                                 </div>
@@ -763,7 +763,7 @@ class StockManagement extends Component {
                                                         <img src={plus} alt="plus" />
                                                     </button>
                                                 </div>
-                                                <div className="row_item">RWF{row.price}</div>
+
                                                 {row.code ?
                                                     <div className="row_item">
                                                         <button className={role !== "user" ? "green_text btn_text" : "hided"} disabled={role === 'user'} onClick={() => this.toggleRequestDialog(row.product_name, row.quantity, row.id)}>
@@ -824,7 +824,7 @@ class StockManagement extends Component {
                                                 </div>
                                             </button>
                                         </div>
-                                        <div className="row_item">Unit value</div>
+
                                         <div className="row_item">Actions</div>
                                     </div>
                                 </div>
@@ -885,7 +885,7 @@ class StockManagement extends Component {
                                                         <img src={plus} alt="plus" />
                                                     </button>
                                                 </div>
-                                                <div className="row_item">RWF{row.price}</div>
+
                                                 {row.code ?
                                                     <div className="row_item">
                                                         <button className={role !== "user" ? "green_text btn_text" : "hided"} disabled={role === 'user'} onClick={() => this.toggleRequestDialog(row.product_name, row.quantity, row.id)}>
