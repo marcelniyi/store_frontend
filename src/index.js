@@ -24,10 +24,18 @@ const axiosMiddlewareOptions = {
     }
 };
 
+
+const cartItems = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
+  : [];
+const initState = { cart: { items: cartItems } };
+
+//initState
+
 const history = createBrowserHistory();
 const appRouterMiddleware = routerMiddleware(history);
 const createStoreWithMiddleware = applyMiddleware(multiClientMiddleware(api, axiosMiddlewareOptions), appRouterMiddleware)(createStore);
-const store = createStoreWithMiddleware(rootReducer(history), {}, window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f);
+const store = createStoreWithMiddleware(rootReducer(history), initState, window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f);
 
 
 ReactDOM.render(
@@ -36,4 +44,3 @@ ReactDOM.render(
     </Provider>,
     document.getElementById('wrapper')
 );
-

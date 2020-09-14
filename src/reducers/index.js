@@ -7,6 +7,7 @@ import reduceCatalog from "./reduceCatalog";
 import  reduceDashboard from './reduceDashboard';
 import  reduceActivity from './reduceActivity';
 import reduceStock from "./reduceStock";
+import cartReducers from "./reduceStore";
 
 
 const rootReducer = (history) => combineReducers({
@@ -18,6 +19,7 @@ const rootReducer = (history) => combineReducers({
     dashboard: reduceDashboard,
     activity: reduceActivity,
     stock: reduceStock,
+    cart: cartReducers,
 });
 
 export default rootReducer;
